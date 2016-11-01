@@ -1,6 +1,7 @@
 package smilecra.hypertext;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
 
 import java.net.URI;
@@ -10,17 +11,16 @@ public class Manager {
 
     private URI self;
     private Integer id;
-    private URI manager;
-    private Integer managerId;
-    private Collection<URI> subOrdinates;
-    private Collection<Integer> subOrdinateIds;
+    private Person manager;
+    private Collection<Person> subOrdinates;
 
-    public Manager(Integer id, Integer managerId, Integer... subOrdinateIds) {
+    public Manager(Integer id, Person manager, Person... subOrdinates) {
         this.id = id;
-        this.managerId = managerId;
-        this.subOrdinateIds = Lists.newArrayList(subOrdinateIds);
+        this.manager = manager;
+        this.subOrdinates = Lists.newArrayList(subOrdinates);
     }
 
+    @JsonView(Views.Managers.class)
     public URI getSelf() {
         return self;
     }
@@ -38,37 +38,21 @@ public class Manager {
         this.id = id;
     }
 
-    @JsonIgnore
-    public Integer getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
-    }
-
-    public URI getManager() {
+    @JsonView(Views.Managers.class)
+    public Person getManager() {
         return manager;
     }
 
-    public void setManager(URI manager) {
+    public void setManager(Person manager) {
         this.manager = manager;
     }
 
-    public Collection<Integer> getSubOrdinateIds() {
-        return subOrdinateIds;
-    }
-
-    @JsonIgnore
-    public void setSubOrdinateIds(Collection<Integer> subOrdinateIds) {
-        this.subOrdinateIds = subOrdinateIds;
-    }
-
-    public Collection<URI> getSubOrdinates() {
+    @JsonView(Views.Managers.class)
+    public Collection<Person> getSubOrdinates() {
         return subOrdinates;
     }
 
-    public void setSubOrdinates(Collection<URI> subOrdinates) {
+    public void setSubOrdinates(Collection<Person> subOrdinates) {
         this.subOrdinates = subOrdinates;
     }
 }

@@ -29,7 +29,7 @@ public class PersonResource {
     }
 
     @GET
-    @JsonView(Person.SummaryView.class)
+    @JsonView(Views.ListPersons.class)
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<Person> listPersons() {
         Collection<Person> ps = service.getPersons();

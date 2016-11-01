@@ -1,5 +1,7 @@
 package smilecra.hypertext;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,6 +27,7 @@ public class ManagerResource {
         this.service = service;
     }
 
+    @JsonView(Views.Managers.class)
     @GET
     public Collection<Manager> listManagers() {
         Collection<Manager> managers = service.getManagers();
@@ -32,6 +35,7 @@ public class ManagerResource {
         return managers;
     }
 
+    @JsonView(Views.Managers.class)
     @GET
     @Path("{id}")
     public Optional<Manager> getManager(@PathParam("id") Integer id) {
@@ -46,19 +50,16 @@ public class ManagerResource {
                 .build(manager.getId());
         manager.setSelf(self);
 
-        URI managerLink = generatePersonLink(manager.getManagerId());
-        manager.setManager(managerLink);
-
-        List<URI> subOrdinateLinks = manager.getSubOrdinateIds().stream()
-                .map(this::generatePersonLink)
-                .collect(toList());
-        manager.setSubOrdinates(subOrdinateLinks);
+        addPersonSelf(manager.getManager());
+        manager.getSubOrdinates().forEach(this::addPersonSelf);
     }
 
-    private URI generatePersonLink(Integer id) {
-        return UriBuilder.fromResource(PersonResource.class)
+    private void addPersonSelf(Person person) {
+        URI personSelf = UriBuilder.fromResource(PersonResource.class)
                 .path(PersonResource.class, "getPerson")
-                .build(id);
+                .build(person.getId());
+
+        person.setSelf(personSelf);
     }
 
 }

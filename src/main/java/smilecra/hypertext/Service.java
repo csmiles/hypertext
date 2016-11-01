@@ -23,7 +23,7 @@ public class Service {
         persons.put(3, charlie);
         persons.put(4, eve);
 
-        managers.put(1, new Manager(1, alice.getId(), bob.getId(), charlie.getId()));
+        managers.put(1, new Manager(1, alice, bob, charlie));
     }
 
     public Collection<Person> getPersons() {
