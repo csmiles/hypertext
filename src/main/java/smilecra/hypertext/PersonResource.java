@@ -39,15 +39,10 @@ public class PersonResource {
 
     @GET
     @Path("{id}")
-    public Response getPerson(@PathParam("id") Integer id) {
-        Optional<Person> pOpt = service.getPerson(id);
-        if (pOpt.isPresent()) {
-            Person p = pOpt.get();
-            addSelf(p);
-            return Response.ok(p).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    public Optional<Person> getPerson(@PathParam("id") Integer id) {
+        Optional<Person> p = service.getPerson(id);
+        p.ifPresent(this::addSelf);
+        return p;
     }
 
     private void addSelf(Person p) {

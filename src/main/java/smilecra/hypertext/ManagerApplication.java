@@ -15,6 +15,7 @@ public class ManagerApplication extends Application<ManagerConfiguration> {
         environment.getObjectMapper().configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
 
         environment.jersey().register(injector.getInstance(PersonResource.class));
+        environment.jersey().register(injector.getInstance(ManagerResource.class));
     }
 
     public static void main(String[] args) throws Exception {
