@@ -11,10 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Path("/managers")
 @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +41,16 @@ public class ManagerResource {
         return manager;
     }
 
+    @JsonView(Views.SubOrdinates.class)
+    @GET
+    @Path("{id}/subordinates")
+    public Optional<Collection<Person>> getSubOrdinates(@PathParam("id") Integer id) {
+        Optional<Manager> manager = service.getManager(id);
+        Optional<Collection<Person>> subOrdinates = manager.map(Manager::getSubOrdinates);
+        subOrdinates.ifPresent(ps -> ps.forEach(this::addPersonSelf));
+        return subOrdinates;
+    }
+
     private void addLinks(Manager manager) {
         URI self = UriBuilder.fromResource(ManagerResource.class)
                 .path(ManagerResource.class, "getManager")
@@ -51,7 +58,11 @@ public class ManagerResource {
         manager.setSelf(self);
 
         addPersonSelf(manager.getManager());
-        manager.getSubOrdinates().forEach(this::addPersonSelf);
+
+        URI subOrdinatesLink = UriBuilder.fromResource(ManagerResource.class)
+                .path(ManagerResource.class, "getSubOrdinates")
+                .build(manager.getId());
+        manager.setSubOrdinatesLink(subOrdinatesLink);
     }
 
     private void addPersonSelf(Person person) {

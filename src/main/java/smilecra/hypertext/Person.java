@@ -27,7 +27,7 @@ public class Person {
         this.id = id;
     }
 
-    @JsonView({Views.ListPersons.class, Views.Managers.class})
+    @JsonView({Views.ListPersons.class, Views.Managers.class, Views.SubOrdinates.class})
     public URI getSelf() {
         return self;
     }
@@ -36,7 +36,7 @@ public class Person {
         this.self = self;
     }
 
-    @JsonView({Views.ListPersons.class, Views.Managers.class})
+    @JsonView({Views.ListPersons.class, Views.Managers.class, Views.SubOrdinates.class})
     public String getName() {
         return name;
     }

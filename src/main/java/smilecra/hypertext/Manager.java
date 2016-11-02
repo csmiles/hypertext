@@ -1,6 +1,7 @@
 package smilecra.hypertext;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
 
@@ -12,6 +13,7 @@ public class Manager {
     private URI self;
     private Integer id;
     private Person manager;
+    private URI subOrdinatesLink;
     private Collection<Person> subOrdinates;
 
     public Manager(Integer id, Person manager, Person... subOrdinates) {
@@ -48,6 +50,15 @@ public class Manager {
     }
 
     @JsonView(Views.Managers.class)
+    @JsonProperty("subOrdinates")
+    public URI getSubOrdinatesLink() {
+        return subOrdinatesLink;
+    }
+
+    public void setSubOrdinatesLink(URI subOrdinatesLink) {
+        this.subOrdinatesLink = subOrdinatesLink;
+    }
+
     public Collection<Person> getSubOrdinates() {
         return subOrdinates;
     }
