@@ -8,14 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Path("/persons")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,21 +27,29 @@ public class PersonResource {
     @GET
     @JsonView(Views.ListPersons.class)
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Person> listPersons() {
+    public PersonCollection listPersons() {
         Collection<Person> ps = service.getPersons();
-        ps.forEach(this::addSelf);
-        return ps;
+        PersonCollection personCollection = new PersonCollection(ps);
+        addLinks(personCollection);
+        return personCollection;
     }
 
     @GET
     @Path("{id}")
     public Optional<Person> getPerson(@PathParam("id") Integer id) {
         Optional<Person> p = service.getPerson(id);
-        p.ifPresent(this::addSelf);
+        p.ifPresent(this::addLinks);
         return p;
     }
 
-    private void addSelf(Person p) {
+    private void addLinks(PersonCollection personCollection) {
+        URI self = UriBuilder.fromResource(PersonResource.class)
+                .build();
+        personCollection.setSelf(self);
+        personCollection.getPersons().forEach(this::addLinks);
+    }
+
+    private void addLinks(Person p) {
         Integer id = p.getId();
 
         URI self = UriBuilder.fromResource(PersonResource.class)

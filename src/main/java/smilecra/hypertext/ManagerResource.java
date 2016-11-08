@@ -26,10 +26,12 @@ public class ManagerResource {
 
     @JsonView(Views.Managers.class)
     @GET
-    public Collection<Manager> listManagers() {
+    public ManagerCollection listManagers() {
         Collection<Manager> managers = service.getManagers();
-        managers.forEach(this::addLinks);
-        return managers;
+        ManagerCollection managerCollection = new ManagerCollection(managers);
+        addLinks(managerCollection);
+
+        return managerCollection;
     }
 
     @JsonView(Views.Managers.class)
@@ -44,11 +46,26 @@ public class ManagerResource {
     @JsonView(Views.SubOrdinates.class)
     @GET
     @Path("{id}/subordinates")
-    public Optional<Collection<Person>> getSubOrdinates(@PathParam("id") Integer id) {
+    public Optional<PersonCollection> getSubOrdinates(@PathParam("id") Integer id) {
         Optional<Manager> manager = service.getManager(id);
-        Optional<Collection<Person>> subOrdinates = manager.map(Manager::getSubOrdinates);
-        subOrdinates.ifPresent(ps -> ps.forEach(this::addPersonSelf));
+        Optional<PersonCollection> subOrdinates = manager.map(Manager::getSubOrdinates);
+        subOrdinates.ifPresent(col -> addLinks(manager.get().getId(), col));
         return subOrdinates;
+    }
+
+    private void addLinks(Integer managerId, PersonCollection personCollection) {
+        URI self = UriBuilder.fromResource(ManagerResource.class)
+                .path(ManagerResource.class, "getSubOrdinates")
+                .build(managerId);
+        personCollection.setSelf(self);
+        personCollection.getPersons().forEach(this::addLinks);
+    }
+
+    private void addLinks(ManagerCollection managerCollection) {
+        URI self = UriBuilder.fromResource(ManagerResource.class)
+                .build();
+        managerCollection.setSelf(self);
+        managerCollection.getManagers().forEach(this::addLinks);
     }
 
     private void addLinks(Manager manager) {
@@ -57,15 +74,11 @@ public class ManagerResource {
                 .build(manager.getId());
         manager.setSelf(self);
 
-        addPersonSelf(manager.getManager());
-
-        URI subOrdinatesLink = UriBuilder.fromResource(ManagerResource.class)
-                .path(ManagerResource.class, "getSubOrdinates")
-                .build(manager.getId());
-        manager.setSubOrdinatesLink(subOrdinatesLink);
+        addLinks(manager.getManager());
+        addLinks(manager.getId(), manager.getSubOrdinates());
     }
 
-    private void addPersonSelf(Person person) {
+    private void addLinks(Person person) {
         URI personSelf = UriBuilder.fromResource(PersonResource.class)
                 .path(PersonResource.class, "getPerson")
                 .build(person.getId());

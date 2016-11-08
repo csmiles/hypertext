@@ -13,13 +13,12 @@ public class Manager {
     private URI self;
     private Integer id;
     private Person manager;
-    private URI subOrdinatesLink;
-    private Collection<Person> subOrdinates;
+    private PersonCollection subOrdinates;
 
     public Manager(Integer id, Person manager, Person... subOrdinates) {
         this.id = id;
         this.manager = manager;
-        this.subOrdinates = Lists.newArrayList(subOrdinates);
+        this.subOrdinates = new PersonCollection(Lists.newArrayList(subOrdinates));
     }
 
     @JsonView(Views.Managers.class)
@@ -50,20 +49,11 @@ public class Manager {
     }
 
     @JsonView(Views.Managers.class)
-    @JsonProperty("subOrdinates")
-    public URI getSubOrdinatesLink() {
-        return subOrdinatesLink;
-    }
-
-    public void setSubOrdinatesLink(URI subOrdinatesLink) {
-        this.subOrdinatesLink = subOrdinatesLink;
-    }
-
-    public Collection<Person> getSubOrdinates() {
+    public PersonCollection getSubOrdinates() {
         return subOrdinates;
     }
 
-    public void setSubOrdinates(Collection<Person> subOrdinates) {
+    public void setSubOrdinates(PersonCollection subOrdinates) {
         this.subOrdinates = subOrdinates;
     }
 }
