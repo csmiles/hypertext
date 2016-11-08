@@ -1,12 +1,13 @@
-package smilecra.hypertext;
+package smilecra.hypertext.managers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
+import smilecra.hypertext.persons.Person;
+import smilecra.hypertext.persons.PersonCollection;
+import smilecra.hypertext.Views;
 
 import java.net.URI;
-import java.util.Collection;
 
 public class Manager {
 

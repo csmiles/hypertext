@@ -5,6 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
+import smilecra.hypertext.managers.ManagerResource;
+import smilecra.hypertext.persons.PersonResource;
 
 public class ManagerApplication extends Application<ManagerConfiguration> {
 

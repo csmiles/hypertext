@@ -1,5 +1,8 @@
 package smilecra.hypertext;
 
+import smilecra.hypertext.managers.Manager;
+import smilecra.hypertext.persons.Person;
+
 import javax.inject.Singleton;
 import java.util.Collection;
 import java.util.HashMap;

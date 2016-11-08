@@ -1,6 +1,8 @@
-package smilecra.hypertext;
+package smilecra.hypertext.persons;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import smilecra.hypertext.Views;
+import smilecra.hypertext.persons.Person;
 
 import java.net.URI;
 import java.util.Collection;
