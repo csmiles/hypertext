@@ -5,15 +5,15 @@ import smilecra.hypertext.Service;
 import smilecra.hypertext.Views;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
+
+import static javax.ws.rs.core.Response.created;
 
 @Path("/persons")
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +42,16 @@ public class PersonResource {
         Optional<Person> p = service.getPerson(id);
         p.ifPresent(this::addLinks);
         return p;
+    }
+
+    @POST
+    public Response createPerson(Person p) {
+        service.createPerson(p);
+        addLinks(p);
+
+        return Response.created(p.getSelf())
+                .entity(p)
+                .build();
     }
 
     private void addLinks(PersonCollection personCollection) {
